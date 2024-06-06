@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+
+{% block content %}
+<style>
+  .form{
+    color: #EEEEEE
+  }
+  .box {
+    width: 100%;
+    padding: 20px;
+    position: absolute;
+    top: 50%;
+    
+    background: #3E454C;
+
+    text-align: center;
+    transition: 0.25s;
+    margin-top: 100px;
+    border-radius: 50px;
+}
+
+.box input[type="text"],
+.box input[type="password"],.box input[type="email"] {
+    border: 0;
+    background: none;
+    
+    margin: 20px auto;
+    text-align: center;
+    border: 2px solid #ffffff;
+    padding: 10px 10px;
+    width: 250px;
+    outline: none;
+    color: white;
+    border-radius: 24px;
+    transition: 0.25s
+}
+
+.box h1,p {
+    color: white;
+    /* text-transform: uppercase; */
+    font-weight: 500
+}
+
+.box input[type="text"]:focus,
+.box input[type="password"]:focus {
+    width: 300px;
+    border-color: #76ABAE
+}
+
+.box input[type="submit"] {
+    border: 0;
+    background: none;
+    display: block;
+    margin: 20px auto;
+    text-align: center;
+    border: 2px solid #40E0D0;
+    padding: 14px 40px;
+    outline: none;
+    color: white;
+    border-radius: 24px;
+    transition: 0.25s;
+    cursor: pointer
+}
+
+.box input[type="submit"]:hover {
+    background: #40E0D0
+}
+
+.forgot {
+    text-decoration: underline
+}
+</style>
+<form class="box" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+      <h1> Sign Up</h1>
+      
+        <p> {% render_field userForm.first_name class="form-control" placeholder="First Name" %}</p>
+          <p>{% render_field userForm.last_name class="form-control" placeholder="Last Name" %}</p>
+            <p> {% render_field userForm.username class="form-control" placeholder="Username" %}</p>
+              <p> {% render_field userForm.email class="form-control" placeholder="Email" %}</p>
+                <p> {% render_field userForm.password class="form-control" placeholder="Password" %}</p>
+                  <p> {% render_field profileForm.bio class="form-control" placeholder="bio" %}</p>
+                    <p>{% render_field profileForm.dob class="form-control" placeholder="dob" %}<br></p>
+                      <p>{% render_field profileForm.profile_pic class="form-control" placeholder="Profile pic" %}</p>
+    
+       <input type="submit" name="" value="Create">
+
+  </form>
+
+  {{msg}}
+  
+{% endblock content %}

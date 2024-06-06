@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Chat App with Sidebar</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+        /* Styling for the red dot */
+        .red-dot {
+            width: 10px;
+            height: 10px;
+            background-color: red;
+            border-radius: 50%;
+            /* display: inline-block; */
+            margin-left: 5px;
+            flex: 1;
+        }
+
+        /* Styling for the chat container */
+        .chat-container {
+            display: flex;
+        }
+
+        /* Styling for the left sidebar */
+        .sidebar {
+            width: 20%;
+            background-color: #f0f0f0;
+            padding: 10px;
+        }
+
+        /* Styling for the chat content */
+        .chat-content {
+            width: 80%;
+            background-color: #fff;
+            padding: 10px;
+        }
+
+        /* Styling for the chat messages */
+        .chat-messages {
+            height: 70vh;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+        }
+
+        /* Styling for the textarea and send button */
+        .message-input {
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 5px;
+            margin-top: 10px;
+        }
+
+        .send-button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+        } 
+        .otherchat {
+            background-color: #007bff;
+            color: #fff;
+            max-width: 60%;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 10px;
+            clear: both;
+            word-wrap: break-word;
+            float: left;
+        }
+
+        .chat-card  {
+            background-color: #e0e0e0;
+            color: #000;
+            max-width: 60%;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 10px;
+            clear: both;
+            word-wrap: break-word;
+            float: right;
+        }
+
+        .navbar-nav { 
+            margin-left: auto; 
+        } 
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light " style="padding:20px; background: #00ADB5;">
+        <a class="navbar-brand" href="#" style="font-size:2.5rem; font-weight:bold">Social</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon">ji</span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                  <a class="nav-link" href="{% url 'dwitter:base' %}">Home </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'createGroup' %}">Create Group</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#">Update Member</a>
+                </li>
+              </ul>
+          
+        </div>
+        
+      </nav>
+
+
+
+    <div class="main">
+        <div class="d-flex align-items-start chat-container">
+            <div class="sidebar" style="margin-top:10px;" >
+                <nav class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                    <a class="nav-link" href="{% url 'createGroup' %}" role="tab" aria-controls="v-pills-home" aria-selected="false">Create Group</a>
+                    {% for group in groups %}
+                    <a class="nav-link" href="?gp={{group.name}}" role="tab" aria-controls="v-pills-home" aria-selected="false">{{group.name}}</a>
+                    {% endfor %}
+
+
+                   </nav>
+            </div>
+            <div id="curruser" class="curruser" style="display:None">
+            {{request.user.username}}
+            </div>
+            <div class="chat-content" >
+                <div class="navbar bg-body-tertiary" style="margin:-30px; display:None">
+                    
+                    <div class="container-fluid">
+                        <a class="navbar-brand" href="#">
+                            <h2 id="username">  <span class="red-dot"></span></h2>
+                        </a>
+                    </div>
+                </div>
+                <div class="chat-messages">
+                    
+                    {% for key, chat in chats.items %}
+                        {% if chat.user == request.user.username %}
+                            <div class="chat-card">
+                                <p>{{chat.msg}}</p>
+                                
+                            </div>
+                        {% else %}
+                            <div class="otherchat">
+                                {{chat.user}}
+                                <p>{{chat.msg}}</p>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                    <!--{% for key, chat in chats.items %}
+                        <div class="otherchat">
+                            <p>{{chat.msg}}</p>
+                        </div> 
+                    {%endfor%}-->
+
+                </div>
+                <div>
+                    <textarea class="message-input" cols="100" rows="3" placeholder="Type your message..."></textarea>
+                    <button class="send-button">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+            document.addEventListener("DOMContentLoaded", function () {
+            // Get the query parameter 'user' from the URL
+            const queryParams = new URLSearchParams(window.location.search);
+            let groupname = queryParams.get("gp");
+            const curruser=document.getElementById('curruser').innerHTML.trim();
+            console.log(curruser)
+            //const user=${request.user}
+
+            // Activate the tab based on the 'user' query parameter
+            const tab = document.querySelector(`[href="/?gp=${groupname}"]`);
+            //console.log(groupname)
+            if (tab) {
+                tab.classList.add("active");
+                tab.setAttribute("aria-selected", "true");
+                document.getElementById('username').textContent = groupname
+            }
+            if (groupname === null) {
+                const chatContent = document.querySelector('.chat-content');
+                chatContent.style.display = 'none';
+            }
+            var sendButton = document.querySelector(".send-button");
+            var textarea = document.querySelector(".message-input");
+            var chatMessages = document.querySelector(".chat-messages");
+            var ws;
+
+            // Function to append a received message to chat messages
+            function appendMessage(user, message) {
+                const chatCard = document.createElement("div");
+                chatCard.classList.add(user === "me" ? "chat-card" : "otherchat");
+                chatCard.innerHTML = `<p> ${message}</p>`;
+                chatMessages.appendChild(chatCard);
+            }
+
+            // Function to send a message via WebSocket
+            function sendMessage(message) {
+                if (ws && ws.readyState === WebSocket.OPEN) {
+                    ws.send(JSON.stringify({ msg: message , group:groupname,curruser:curruser}));
+                }
+                console.log("sending");
+            }
+
+            // Connect to the WebSocket server
+            
+            //groupname=groupname.replace('%20',' ')
+            console.log(groupname)
+
+            ws = new WebSocket("ws://127.0.0.1:8000/ws/wsc/group/"+groupname+"/");
+
+            // Handle WebSocket connection open
+            ws.addEventListener("open", function (event) {
+                console.log("WebSocket connection opened.");
+            });
+
+            /*ws.onmessage = function(e) {
+                const data = JSON.parse(e.data);
+                console.log(data)
+                alert(`[message] Data received from server: ${event.data}`);
+                //document.querySelector('#chat-log').value += (data.message + '\n');
+            };*/
+            // Handle WebSocket message received
+            console.log("down");
+            ws.addEventListener("message", function (event) {
+                console.log("working");
+                //alert(`[message] Data received from server: ${event.data}`);
+                
+                console.log("check"+event.data);
+                appendMessage("frnd",event.data);
+                
+                
+            });
+
+            // Handle WebSocket close
+            ws.addEventListener("close", function (event) {
+                console.log("WebSocket connection closed.");
+            });
+
+            // Handle Send button click
+            sendButton.addEventListener('click', function () {
+                const messageText = textarea.value;
+
+                if (messageText.trim() !== "") {
+                    sendMessage(messageText);
+
+                    // Append the sent message to chat messages
+                    appendMessage("me", messageText);
+
+                    // Clear the textarea
+                    textarea.value = "";
+                }
+            });
+        });
+
+
+    </script>
+</body>
+</html>

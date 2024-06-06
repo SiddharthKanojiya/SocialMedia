@@ -1,0 +1,153 @@
+<!-- dwitter/templates/dwitter/profile.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block content %}
+
+<div class="column">
+
+    <div class="block">
+    <h1 class="title is-1">
+        {{profile.user.username|upper}}'s Posts
+    </h1>
+    </div>
+
+    <div class="card" >
+        <div class="card-image" style=" display: flex;
+        justify-content: center; padding:20px; ">
+          <figure class="imgclass" >
+            <img class="is-rounded"
+              src="{% static profile.profile_pic.url %}"
+              alt="Placeholder image"
+              style="height:200px; weight:200px "
+            />
+          </figure>
+        </div>
+        <div class="card-content">
+          <div class="media">
+            <div class="media-left">
+              <figure class="image is-48x48">
+                <img
+                  src="{% static profile.profile_pic.url %}"
+                  alt="Placeholder image"
+                />
+              </figure>
+            </div>
+            <div class="media-content">
+              <p class="title is-4">{{profile.user.first_name}} {{profile.user.last_name}}</p>
+              <p class="subtitle is-6">@{{profile.user.username}}</p>
+            </div>
+          </div>
+      
+          <div class="content">
+            {{profile.bio}}
+            
+            <br />
+            Wish Me at {{profile.dob}}
+
+            {% if profile.is_online %}
+            Online
+            {% else %}
+            Offline
+            {% endif %}
+
+          </div>
+        </div>
+      </div>
+
+
+    <form method="post" style="margin:20px">
+        {% csrf_token %}
+    <div class="buttons has-addons">
+        {% if profile in user.profile.follows.all %}
+            <button class="button is-success is-static">Follow</button>
+            <button class="button is-danger" name="follow" value="unfollow">
+                Unfollow
+            </button>
+        {% else %}
+            <button class="button is-success" name="follow" value="follow">
+                Follow
+            </button>
+            <button class="button is-danger is-static">Unfollow</button>
+        {% endif %}
+    </div>
+</form>
+<div class="content">
+    {% if profile in user.profile.follows.all %}
+
+    {% for dweet in profile.user.dweets.all %}
+        <div class="box">
+            <div class="title" style="font-size:xxx-large">  {{dweet.title}}</div>
+                <div class="title" style="font-size:0.9em; font-weight:400;">  {{ dweet.body }} </div>
+               
+
+                <div class="imgclass" style="background-Color:#F5ECAD; height:350px; weight:100%; padding:20px; outline: solid 1px black;
+                display: flex;
+                justify-content: center; ">
+               
+                    <img class="img" src="{% static dweet.post.url %}" alt="post pic" style="height:300px; weight:300px;outline: solid 1px black;" >
+                </div> 
+        </div>
+    {% endfor %}
+    
+    {% else %} 
+    {% for dweet in profile.user.dweets.all %}
+    <div class="box">
+        <div class="title" style="font-size:xxx-large">  {{dweet.title}}</div>
+        <div class="title" style="font-size:0.9em; font-weight:400;">  {{ dweet.body | truncatechars:5 }} </div>
+        Follow for more....
+    </div>
+    {% endfor %}
+    {% endif %}
+</div>
+</div>
+
+
+<div class="column is-one-third">
+
+    <div class="block">
+        <a href="{% url 'dwitter:profile_list' %}">
+            <button class="button is-dark is-outlined is-fullwidth">
+                All Profiles
+            </button>
+        </a>
+    </div>
+
+    <div class="block">
+        <h3 class="title is-4">
+            {{profile.user.username}} follows:
+        </h3>
+        <div class="content">
+            <ul>
+            {% for following in profile.follows.all %}
+                <li>
+                    <a href="{% url 'dwitter:profile' following.id %}">
+                        {{ following }}
+                    </a>
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="block">
+        <h3 class="title is-4">
+            {{profile.user.username}} is followed by:
+        </h3>
+        <div class="content">
+            <ul>
+            {% for follower in profile.followed_by.all %}
+                <li>
+                    <a href="{% url 'dwitter:profile' follower.id %}">
+                        {{ follower }}
+                    </a>
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+</div>
+
+{% endblock content %}

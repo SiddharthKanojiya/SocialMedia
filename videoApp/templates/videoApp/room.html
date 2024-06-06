@@ -1,0 +1,32 @@
+{% extends "videoApp/main.html" %}
+{% load static %}
+{% block content %}
+<main>
+    <section id="room-name-wrapper">
+        <div class="room-name" id="room-name">{{request.user.username}}</div>
+    </section>
+
+            <div id="video-streams">
+
+
+                  
+            </div>
+
+    <section id="controls-wrapper">
+        <div class="icon-wrapper">
+            <img class="control-icon" id="mic-btn" src="{% static 'images/microphone.svg' %}" />
+        </div>
+
+        <div class="icon-wrapper">
+            <img class="control-icon" id="camera-btn" src="{% static 'images/video.svg' %}" />
+        </div>
+
+        <div class="icon-wrapper">
+            <img class="control-icon" id="leave-btn" src="{% static 'images/endcall.png' %}" />
+        </div>
+    </section>
+
+    <script type="text/javascript" src="{% static 'assets/AgoraRTC_N-4.20.2.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/streams.js' %}"></script>
+
+{% endblock content%} 

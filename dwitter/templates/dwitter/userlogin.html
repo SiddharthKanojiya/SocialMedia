@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+
+{% block content %}
+<style>
+  .box {
+    width: 50%;
+    padding: 40px;
+    position: absolute;
+    top: 50%;
+    
+    background: #3E454C;
+    text-align: center;
+    transition: 0.25s;
+    margin-top: 100px;
+    left: 30%;
+
+    border-radius: 50px;
+}
+
+.box input[type="text"],
+.box input[type="password"] {
+    border: 0;
+    background: none;
+    display: block;
+    margin: 20px auto;
+    text-align: center;
+    border: 2px solid #ffffff;
+    padding: 10px 10px;
+    width: 250px;
+    outline: none;
+    color: white;
+    border-radius: 24px;
+    transition: 0.25s
+}
+
+.box h1 {
+    color: white;
+    /* text-transform: uppercase; */
+    font-weight: 500
+}
+
+.box input[type="text"]:focus,
+.box input[type="password"]:focus {
+    width: 300px;
+    border-color: #76ABAE
+}
+
+.box input[type="submit"] {
+    border: 0;
+    background: none;
+    display: block;
+    margin: 20px auto;
+    text-align: center;
+    border: 2px solid #40E0D0;
+    padding: 14px 40px;
+    outline: none;
+    color: white;
+    border-radius: 24px;
+    transition: 0.25s;
+    cursor: pointer
+}
+
+.box input[type="submit"]:hover {
+    background: #40E0D0
+}
+
+.forgot {
+    text-decoration: underline
+}
+</style>
+<div class="container">
+<form class="box" method="post">
+    {% csrf_token %}
+      <h1>Customer Login</h1>
+      
+                 {% render_field form.username class="form-control" placeholder="Username" autocomplete="off" %}
+                 {% render_field form.password class="form-control" placeholder="Password" %}
+       <input type="submit" name="" value="Login" >
+       <a href={%url 'password_reset' %}  class="btn btn-outline">Forgot Password</a>
+
+  </form>
+</div>
+  
+<!--{%url 'dwitter:password_reset' %}-->
+  {% endblock content %}

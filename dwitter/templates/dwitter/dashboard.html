@@ -1,0 +1,76 @@
+<!-- dwitter/templates/dwitter/dashboard.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block content %}
+<style>
+    
+
+  
+      
+</style>
+<div class="column">
+    {% for followed in user.profile.follows.all %}
+        {% for dweet in followed.user.dweets.all %}
+            <div class="box">
+                <div class="title" style="font-size:xxx-large">  {{dweet.title}}</div>
+                <div class="title" style="font-size:0.9em; font-weight:400;">  {{ dweet.body }} </div>
+               
+
+                <div class="imgclass" style="background-Color:#F5ECAD; height:350px; weight:100%; padding:20px; outline: solid 1px black;
+                display: flex;
+                justify-content: center; ">
+               
+                    <img class="img" src="{% static dweet.post.url %}" alt="post pic" style="height:300px; weight:300px;outline: solid 1px black;" >
+                </div>    
+                  <br>
+                
+
+                
+                
+                <form  method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {% render_field form.body class="form-control" placeholder="    Add Your Comment " %}
+                    <div class="hidden" style="display:none;">
+                    {% render_field form.dweetid class="form-control" value=dweet.id %}
+                    </div>
+                    <input type="submit" value="Comment">
+                </form>
+
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                <div class="buttons has-addons">
+                    {% if request.user in dweet.likedby.all %}
+                    <button class="button is-danger" name="likebtn" value="{{dweet.id}}-unlike">
+                        Like
+                    </button>
+                       
+                    {% else %}
+                    <button class="button is-danger is-light" name="likebtn" value="{{dweet.id}}-like">
+                        Like
+                    </button>
+                        
+                        
+                    {% endif %}
+                </div>
+
+            </form>
+
+
+
+
+
+                
+                <div class="is-small has-text-grey-light" style="float: right ;">
+                    {{ dweet.created_at }} by {{ dweet.user.username }}
+                </div>
+            </div>
+        {% endfor %}
+    {% endfor %}
+</div>
+<script>
+    
+      
+</script>
+{% endblock content %}
